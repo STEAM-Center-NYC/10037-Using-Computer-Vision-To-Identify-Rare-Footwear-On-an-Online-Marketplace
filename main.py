@@ -6,7 +6,7 @@ import pymysql.cursors
 from pprint import pprint as print
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
-from dynaconf import Dynaconf
+#from dynaconf import Dynaconf
 
 ######
 
@@ -64,6 +64,10 @@ def signup():
 def signin():
 
 '''
+
+@app.route("/register", methods=["POST", "GET"])
+def signup():
+    return render_template ("signup.html.jinja")
 
 @app.route("/", methods=["POST", "GET"])
 def index():
