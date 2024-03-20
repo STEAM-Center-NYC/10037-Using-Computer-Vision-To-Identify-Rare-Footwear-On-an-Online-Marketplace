@@ -108,9 +108,9 @@ def index():
     
     #if flask_login.current_user.is_authenticated:
          
-    #    return redirect ("/hom")
+    #    return redirect ("/home")
 
-    return render_template ("home.html.jinja")
+    return render_template ("landing.html.jinja")
 
 '''
 
