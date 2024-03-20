@@ -17,7 +17,6 @@ import os
 import matplotlib.pyplot as pplt
 import matplotlib.image as ppltimg
 
-
 ######
 
 app = Flask(__name__)
@@ -112,13 +111,10 @@ def index():
 
     return render_template ("landing.html.jinja")
 
-'''
 
 @app.route("/register", methods=["POST", "GET"])
 def signup():
-
-
-'''
+    return render_template ("signup.html.jinja")
 
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
