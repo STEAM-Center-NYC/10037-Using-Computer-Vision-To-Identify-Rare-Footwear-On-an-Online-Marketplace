@@ -68,4 +68,4 @@ def signin():
 @app.route("/", methods=["POST", "GET"])
 def index():
     
-    return render_template ("landing.html.jinja")
+    return render_template ("homepage.html.jinja")
