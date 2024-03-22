@@ -46,7 +46,7 @@ class User:
      def get_id(self):
           
           return str(self.id)
-
+     
 
 ######
 
@@ -79,14 +79,12 @@ def load_user(user_id):
 def connect_db():
     return pymysql.connect (
         database = "kick_insight",
-        user = "cscarlett",
-        password = "228941274",
+        user = "djames",
+        password = "228118717",
         host = "10.100.33.60",
         cursorclass = pymysql.cursors.DictCursor,
         autocommit=True
 )
-
-
 
 def get_db():
     #Opens a new database connection per request.        
@@ -104,16 +102,12 @@ def close_db(error):
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    
-    #if flask_login.current_user.is_authenticated:
-         
-    #    return redirect ("/home")
 
     return render_template ("landing.html.jinja")
 
-
 @app.route("/register", methods=["POST", "GET"])
 def signup():
+
     return render_template ("signup.html.jinja")
 
 @app.route("/signin", methods=["POST", "GET"])
@@ -139,4 +133,4 @@ def signin():
 
                  return redirect("/feed")
 
-        return render_template("signin.html.jinja") 
+        return render_template("signin.html.jinja")
