@@ -1,34 +1,43 @@
 from flask import Flask, render_template, request, redirect, jsonify, g
-import gpt_2_simple as gpt2
 import flask_login
 import pymysql
 import pymysql.cursors
 from pprint import pprint as print
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
-from dynaconf import Dynaconf
-import PIL
-import cv2
-import numpy as np
-from sklearn.model_selection import train_test_split # as something ez to write pls
-import tensorflow as tf
-import tensorflow_hub as hub
-import os
-import matplotlib.pyplot as pplt
-import matplotlib.image as ppltimg
 
 ######
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
-"""
-settings = Dynaconf {
-    settings
-}
-"""
+def connect_db():
+    return pymysql.connect (
+        database = "cscarlett_healthsync",
+        user = "cscarlett",
+        password = "228941274",
+        host = "10.100.33.60",
+        cursorclass = pymysql.cursors.DictCursor,
+        autocommit=True
+)
+
+def get_db():
+    '''Opens a new database connection per request.'''        
+    if not hasattr(g, 'db'):
+        g.db = connect_db()
+    return g.db   
+
+@app.teardown_appcontext
+def close_db(error):
+    '''Closes the database connection at the end of request.'''    
+    if hasattr(g, 'db'):
+        g.db.close()  
 
 ######
+
+app.secret_key = "br3@D_y_-19!"
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
 
 class User:
      
@@ -47,12 +56,7 @@ class User:
           
           return str(self.id)
 
-
 ######
-
-app.secret_key = "br3@D_y_-19!"
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
 
 @login_manager.user_loader 
 
@@ -73,48 +77,48 @@ def load_user(user_id):
         return None
     
     return User(check["id"], check ["pfp"], check["email"], check["username"])
-
-######
-
-def connect_db():
-    return pymysql.connect (
-        database = "kick_insight",
-        user = "cscarlett",
-        password = "228941274",
-        host = "10.100.33.60",
-        cursorclass = pymysql.cursors.DictCursor,
-        autocommit=True
-)
-
-
-
-def get_db():
-    #Opens a new database connection per request.        
-    if not hasattr(g, 'db'):
-        g.db = connect_db()
-    return g.db   
-
-@app.teardown_appcontext
-def close_db(error):
-    #Closes the database connection at the end of request.    
-    if hasattr(g, 'db'):
-        g.db.close() 
-
+     
 ######
 
 @app.route("/", methods=["POST", "GET"])
 def index():
     
-    #if flask_login.current_user.is_authenticated:
+    if flask_login.current_user.is_authenticated:
          
-    #    return redirect ("/home")
+        return redirect ("/feed")
 
-    return render_template ("landing.html.jinja")
+    return render_template ("home.html.jinja")
 
+    # return ("<p style=\"color:red;\">Hello!</p>")
+
+######
 
 @app.route("/register", methods=["POST", "GET"])
 def signup():
+
+    if request.method == "POST":
+
+        newUserEmail = request.form["email"]
+
+        newUserUsername = request.form["username"]
+
+        newUserPassword = request.form["password"]
+
+        newUserBirthday = request.form["birthday"]
+        
+        cursor = get_db().cursor()
+
+        cursor.execute(f"INSERT INTO `users` (`email`, `username`, `password`, `birthday`) VALUES ('{newUserEmail}', '{newUserUsername}', '{newUserPassword}', '{newUserBirthday}')")
+
+        cursor.close()
+
+        get_db().commit()
+
+        return redirect("sigin.html.jinja")
+
     return render_template ("signup.html.jinja")
+
+######
 
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
@@ -140,3 +144,44 @@ def signin():
                  return redirect("/feed")
 
         return render_template("signin.html.jinja") 
+
+
+        #if cursor.fetchone(f"SELECT `email`, `username`, `password` FROM `users`") ==  :
+        #if cursor.execute(f"SELECT `email`, `username`, `password` FROM `users`") == :
+        #return redirect("/feed")
+
+
+@app.route('/feed')
+@flask_login.login_required
+def feed():
+     
+    if flask_login.current_user.is_authenticated == False:
+
+        return redirect("/")
+
+    cursor = get_db().cursor()
+
+            
+    cursor.execute(f"SELECT * FROM `posts` ORDER BY `whenposted`")
+
+    checker = cursor.fetchone()
+
+    cursor.close()
+
+    get_db().commit()
+     
+    return render_template("feed.html.jinja", posting = checker)
+
+@app.route('/post')
+def post():
+
+    desc = request.form["description"]
+    useriD = flask_login.current_user.id
+
+    cursor = get_db().cursor()
+            
+    cursor.execute(f"INSERT INTO `posts` ( `description`, `user_id`, `timestamp`) VALUES ('{desc}', '{useriD}')")
+
+    cursor.close()
+
+    get_db().commit()
