@@ -87,7 +87,7 @@ def index():
          
         return redirect ("/feed")
 
-    return render_template ("home.html.jinja")
+    return render_template ("homepage.html.jinja")
 
     # return ("<p style=\"color:red;\">Hello!</p>")
 
@@ -151,37 +151,7 @@ def signin():
         #return redirect("/feed")
 
 
-@app.route('/feed')
-@flask_login.login_required
-def feed():
-     
-    if flask_login.current_user.is_authenticated == False:
+@app.route('/itempage')
+def itempage():
 
-        return redirect("/")
-
-    cursor = get_db().cursor()
-
-            
-    cursor.execute(f"SELECT * FROM `posts` ORDER BY `whenposted`")
-
-    checker = cursor.fetchone()
-
-    cursor.close()
-
-    get_db().commit()
-     
-    return render_template("feed.html.jinja", posting = checker)
-
-@app.route('/post')
-def post():
-
-    desc = request.form["description"]
-    useriD = flask_login.current_user.id
-
-    cursor = get_db().cursor()
-            
-    cursor.execute(f"INSERT INTO `posts` ( `description`, `user_id`, `timestamp`) VALUES ('{desc}', '{useriD}')")
-
-    cursor.close()
-
-    get_db().commit()
+    return render_template("itempage.html.jinja")
