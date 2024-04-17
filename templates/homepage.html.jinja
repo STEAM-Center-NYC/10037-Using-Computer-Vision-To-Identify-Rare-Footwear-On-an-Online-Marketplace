@@ -26,27 +26,30 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 <body>
 
 <!-- navbar with dark blue outing only has 3 links,AI page, Home page, empty one for later use-->
-<div class="text-bg-primary p-3">   
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<div class="sticky-top" >
+ <div class=" border border-success border border-5 text-center">   
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Store</a>
+          <a class="nav-link active" aria-current="page" href="/">Store</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">AI</a>
+          <a class="nav-link" href="aipage">AI</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">for later use</a>
-        </li>
+        </li>        
       </ul>
     </div>
   </div>
-</nav>
-</div> 
+  
+  </nav>
+ </div> 
+</div>
 <!-- end of navbar-->
-
-
+<br>
+<img src="/static/kickinsightlogo.png" class="rounded mx-auto d-block " width="800" height="400">
 <br>
 
 <!--Main part of body with all items,best to make all pictures same size and length  -->
@@ -117,7 +120,7 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
         </a><!--end of reference -->
 
         <!--item card which leads to item page has img,price,name,short decription -->
-        <a href="itempage"><!--reference to other page start-->
+        <a href="/itempage"><!--reference to other page start-->
         <div class="col">
         <div class="card h-10">
             <img src="https://www.consortium.co.uk/media/catalog/product/cache/1/image/1000x/af097278c5db4767b0fe9bb92fe21690/s/p/spitfire-formula-four-tablet-101du-skateboard-wheels-55mm-natural-spi-skw-6405-cat.jpg" class="img-fluid img-thumbnail popskateboardimg2"  alt="...">
