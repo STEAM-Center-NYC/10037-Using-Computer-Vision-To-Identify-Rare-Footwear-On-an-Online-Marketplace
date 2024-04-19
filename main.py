@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, jsonify, g
-import gpt_2_simple as gpt2
 import flask_login
 import pymysql
 import pymysql.cursors
@@ -30,23 +29,9 @@ settings = Dynaconf {
 
 ######
 
-gpt2.download_gpt2(model_name = '124M')
-
-session = gpt2.start_tf_sess()
-
-trainingData = os.listdir("train/")[0:11000]
-
-print(trainingData[0])
-
-#for fileName in trainingData:
-#    image = PIL.Image.open("train/" + fileName)
-#    image = image.resize((224, 224))
-#    image = image.convert("RGB")
-    
-#    image.save("resized/" + fileName)
-
-
-######
+app.secret_key = "br3@D_y_-19!"
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
 
 class User:
      
@@ -65,12 +50,7 @@ class User:
           
           return str(self.id)
 
-
 ######
-
-app.secret_key = "br3@D_y_-19!"
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
 
 @login_manager.user_loader 
 
@@ -91,7 +71,7 @@ def load_user(user_id):
         return None
     
     return User(check["id"], check ["pfp"], check["email"], check["username"])
-
+     
 ######
 
 def connect_db():
@@ -103,6 +83,8 @@ def connect_db():
         cursorclass = pymysql.cursors.DictCursor,
         autocommit=True
 )
+
+
 
 def get_db():
     #Opens a new database connection per request.        
@@ -120,13 +102,22 @@ def close_db(error):
 
 @app.route("/", methods=["POST", "GET"])
 def index():
+    
+    if flask_login.current_user.is_authenticated:
+         
+        return redirect ("/feed")
 
-    return render_template ("landing.html.jinja")
+    return render_template ("homepage.html.jinja")
+
+    # return ("<p style=\"color:red;\">Hello!</p>")
+
+'''
 
 @app.route("/register", methods=["POST", "GET"])
 def signup():
 
-    return render_template ("signup.html.jinja")
+
+'''
 
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
@@ -151,4 +142,15 @@ def signin():
 
                  return redirect("/feed")
 
-        return render_template("signin.html.jinja")
+        return render_template("signin.html.jinja") 
+
+
+        #if cursor.fetchone(f"SELECT `email`, `username`, `password` FROM `users`") ==  :
+        #if cursor.execute(f"SELECT `email`, `username`, `password` FROM `users`") == :
+        #return redirect("/feed")
+
+
+@app.route('/itempage')
+def itempage():
+
+    return render_template("itempage.html.jinja")
