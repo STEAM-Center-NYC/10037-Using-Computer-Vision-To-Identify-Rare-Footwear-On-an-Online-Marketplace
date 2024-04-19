@@ -5,33 +5,27 @@ import pymysql.cursors
 from pprint import pprint as print
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
+from dynaconf import Dynaconf
+import PIL
+import cv2
+import numpy as np
+from sklearn.model_selection import train_test_split # as something ez to write pls
+import tensorflow as tf
+import tensorflow_hub as hub
+import os
+import matplotlib.pyplot as pplt
+import matplotlib.image as ppltimg
 
 ######
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
-def connect_db():
-    return pymysql.connect (
-        database = "cscarlett_healthsync",
-        user = "cscarlett",
-        password = "228941274",
-        host = "10.100.33.60",
-        cursorclass = pymysql.cursors.DictCursor,
-        autocommit=True
-)
-
-def get_db():
-    '''Opens a new database connection per request.'''        
-    if not hasattr(g, 'db'):
-        g.db = connect_db()
-    return g.db   
-
-@app.teardown_appcontext
-def close_db(error):
-    '''Closes the database connection at the end of request.'''    
-    if hasattr(g, 'db'):
-        g.db.close()  
+"""
+settings = Dynaconf {
+    settings
+}
+"""
 
 ######
 
@@ -80,6 +74,32 @@ def load_user(user_id):
      
 ######
 
+def connect_db():
+    return pymysql.connect (
+        database = "kick_insight",
+        user = "cscarlett",
+        password = "228941274",
+        host = "10.100.33.60",
+        cursorclass = pymysql.cursors.DictCursor,
+        autocommit=True
+)
+
+
+
+def get_db():
+    #Opens a new database connection per request.        
+    if not hasattr(g, 'db'):
+        g.db = connect_db()
+    return g.db   
+
+@app.teardown_appcontext
+def close_db(error):
+    #Closes the database connection at the end of request.    
+    if hasattr(g, 'db'):
+        g.db.close() 
+
+######
+
 @app.route("/", methods=["POST", "GET"])
 def index():
     
@@ -91,34 +111,13 @@ def index():
 
     # return ("<p style=\"color:red;\">Hello!</p>")
 
-######
+'''
 
 @app.route("/register", methods=["POST", "GET"])
 def signup():
 
-    if request.method == "POST":
 
-        newUserEmail = request.form["email"]
-
-        newUserUsername = request.form["username"]
-
-        newUserPassword = request.form["password"]
-
-        newUserBirthday = request.form["birthday"]
-        
-        cursor = get_db().cursor()
-
-        cursor.execute(f"INSERT INTO `users` (`email`, `username`, `password`, `birthday`) VALUES ('{newUserEmail}', '{newUserUsername}', '{newUserPassword}', '{newUserBirthday}')")
-
-        cursor.close()
-
-        get_db().commit()
-
-        return redirect("sigin.html.jinja")
-
-    return render_template ("signup.html.jinja")
-
-######
+'''
 
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
