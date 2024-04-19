@@ -155,3 +155,8 @@ def signin():
 def itempage():
 
     return render_template("itempage.html.jinja")
+
+@app.route('/aipage')
+def aipage():
+
+    return render_template("aipage.html.jinja")
