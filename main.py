@@ -17,7 +17,6 @@ import os
 import matplotlib.pyplot as pplt
 import matplotlib.image as ppltimg
 
-
 ######
 
 app = Flask(__name__)
@@ -28,6 +27,24 @@ settings = Dynaconf {
     settings
 }
 """
+
+######
+
+gpt2.download_gpt2(model_name = '124M')
+
+session = gpt2.start_tf_sess()
+
+trainingData = os.listdir("train/")[0:11000]
+
+print(trainingData[0])
+
+#for fileName in trainingData:
+#    image = PIL.Image.open("train/" + fileName)
+#    image = image.resize((224, 224))
+#    image = image.convert("RGB")
+    
+#    image.save("resized/" + fileName)
+
 
 ######
 
@@ -87,8 +104,6 @@ def connect_db():
         autocommit=True
 )
 
-
-
 def get_db():
     #Opens a new database connection per request.        
     if not hasattr(g, 'db'):
@@ -105,20 +120,13 @@ def close_db(error):
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    
-    #if flask_login.current_user.is_authenticated:
-         
-    #    return redirect ("/home")
 
     return render_template ("landing.html.jinja")
-
-'''
 
 @app.route("/register", methods=["POST", "GET"])
 def signup():
 
-
-'''
+    return render_template ("signup.html.jinja")
 
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
@@ -143,4 +151,4 @@ def signin():
 
                  return redirect("/feed")
 
-        return render_template("signin.html.jinja") 
+        return render_template("signin.html.jinja")
