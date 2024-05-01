@@ -12,7 +12,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split # as something ez to write pls
 import tensorflow as tf
 import tensorflow_hub as hub
-import os
+#import os
 import matplotlib.pyplot as pplt
 import matplotlib.image as ppltimg
 
