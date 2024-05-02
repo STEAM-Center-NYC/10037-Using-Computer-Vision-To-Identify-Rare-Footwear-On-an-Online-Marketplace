@@ -129,7 +129,9 @@ def index():
 
 @app.route("/register", methods=["POST", "GET"])
 def signup():
+    
     return render_template ("signup.html.jinja")
+
 
 
 @app.route("/signin", methods=["POST", "GET"])
