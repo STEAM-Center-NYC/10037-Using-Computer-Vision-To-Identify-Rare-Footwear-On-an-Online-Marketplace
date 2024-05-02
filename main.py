@@ -111,13 +111,13 @@ def index():
 
     # return ("<p style=\"color:red;\">Hello!</p>")
 
-'''
+
 
 @app.route("/register", methods=["POST", "GET"])
 def signup():
 
+    return render_template("signup.html.jinja")
 
-'''
 
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
