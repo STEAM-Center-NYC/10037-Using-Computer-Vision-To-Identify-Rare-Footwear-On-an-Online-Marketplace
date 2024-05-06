@@ -4,7 +4,7 @@ Flask-Login==0.6.3
 gunicorn==21.2.0
 dynaconf==3.2.4
 Flask-HTTPAuth==4.8.0
-Werkzeug==3.0.1
+Werkzeug==3.0.3
 #gpt-2-simple==0.8.1
 #numpy==1.26.1
 #tensorflow==2.15.0
