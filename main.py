@@ -5,7 +5,16 @@ import pymysql.cursors
 from pprint import pprint as print
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from dynaconf import Dynaconf
+#import PIL
+#import cv2
+#import numpy as np
+#from sklearn.model_selection import train_test_split # as something ez to write pls
+#import tensorflow as tf
+#import tensorflow_hub as hub
+#import os
+#import matplotlib.pyplot as pplt
+#import matplotlib.image as ppltimg
 ######
 
 app = Flask(__name__)
