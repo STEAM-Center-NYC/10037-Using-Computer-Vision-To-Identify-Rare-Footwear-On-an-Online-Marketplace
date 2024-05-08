@@ -118,12 +118,9 @@ def close_db(error):
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    
-    #if flask_login.current_user.is_authenticated:
-         
-    #    return redirect ("/home")
 
-    # return ("<p style=\"color:red;\">Hello!</p>")
+  
+    return render_template ("homepage.html.jinja")
 
 
 @app.route("/signup", methods=["POST", "GET"])
@@ -134,25 +131,15 @@ def signup():
 
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
-        
-        if request.method == "POST":
-        
-            userName = request.form["username"]
 
-            userPassword = request.form["password"]
+          return render_template("signin.html.jinja") 
 
-            cursor = get_db().cursor()
+@app.route("/aipage", methods=["POST", "GET"])
+def aipage():
 
-            cursor.execute(f"SELECT * FROM `users` WHERE `username` = '{userName}'")
+          return render_template("aipage.html.jinja")
+ 
+@app.route("/cartpage", methods=["POST", "GET"])
+def cartpage():
 
-            checker = cursor.fetchone()
-
-            if checker is not None and userPassword == checker["password"]:
-                 
-                 user = load_user(checker["id"])
-
-                 flask_login.login_user(user)
-
-                 return redirect("/feed")
-
-        return render_template("signin.html.jinja") 
+          return render_template("cartpage.html.jinja") 
