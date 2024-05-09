@@ -118,6 +118,7 @@ def close_db(error):
 
 @app.route("/", methods=["POST", "GET"])
 def index():
+    return render_template ("homepage.html.jinja")
     
     #if flask_login.current_user.is_authenticated:
          
@@ -155,4 +156,5 @@ def signin():
 
                  return redirect("/feed")
 
-        return render_template("signin.html.jinja") 
+        return render_template("signin.html.jinja")
+
