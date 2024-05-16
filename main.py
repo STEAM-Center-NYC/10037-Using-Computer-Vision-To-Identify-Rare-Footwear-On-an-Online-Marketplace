@@ -15,14 +15,15 @@ from dynaconf import Dynaconf
 #import os
 #import matplotlib.pyplot as pplt
 #import matplotlib.image as ppltimg
-######
+
+######database
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
 def connect_db():
     return pymysql.connect (
-        database = "cscarlett_healthsync",
+        database = "kick_insight",
         user = "cscarlett",
         password = "228941274",
         host = "10.100.33.60",
@@ -31,18 +32,19 @@ def connect_db():
 )
 
 def get_db():
-    '''Opens a new database connection per request.'''        
+    #Opens a new database connection per request.        
     if not hasattr(g, 'db'):
         g.db = connect_db()
     return g.db   
 
 @app.teardown_appcontext
 def close_db(error):
-    '''Closes the database connection at the end of request.'''    
+    #Closes the database connection at the end of request.    
     if hasattr(g, 'db'):
-        g.db.close()  
+        g.db.close() 
 
-######
+
+######userlogin
 
 app.secret_key = "br3@D_y_-19!"
 login_manager = flask_login.LoginManager()
@@ -87,44 +89,18 @@ def load_user(user_id):
         return None
     
     return User(check["id"], check ["pfp"], check["email"], check["username"])
-     
-######
 
-def connect_db():
-    return pymysql.connect (
-        database = "kick_insight",
-        user = "cscarlett",
-        password = "228941274",
-        host = "10.100.33.60",
-        cursorclass = pymysql.cursors.DictCursor,
-        autocommit=True
-)
-
-
-
-def get_db():
-    #Opens a new database connection per request.        
-    if not hasattr(g, 'db'):
-        g.db = connect_db()
-    return g.db   
-
-@app.teardown_appcontext
-def close_db(error):
-    #Closes the database connection at the end of request.    
-    if hasattr(g, 'db'):
-        g.db.close() 
-
-######
+######routs
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    return render_template ("homepage.html.jinja")
-    
-    #if flask_login.current_user.is_authenticated:
-         
-    #    return redirect ("/home")
 
-    # return ("<p style=\"color:red;\">Hello!</p>")
+  
+    return render_template ("homepage.html.jinja")
+
+@app.route("/itempage", methods=["POST", "GET"])
+def itempage():
+    return render_template("itempage.html.jinja")
 
 
 @app.route("/signup", methods=["POST", "GET"])
@@ -133,28 +109,28 @@ def signup():
 
 
 
-@app.route("/signin", methods=["POST", "GET"])
-def signin():
-        
-        if request.method == "POST":
-        
-            userName = request.form["username"]
+#@app.route("/signin", methods=["POST", "GET"])
+#def signin():
 
-            userPassword = request.form["password"]
+#          return render_template("signin.html.jinja") 
 
-            cursor = get_db().cursor()
+@app.route("/aipage", methods=["POST", "GET"])
+def aipage():
 
-            cursor.execute(f"SELECT * FROM `users` WHERE `username` = '{userName}'")
+          return render_template("aipage.html.jinja")
+ 
+@app.route("/cartpage", methods=["POST", "GET"])
+def cartpage():
 
-            checker = cursor.fetchone()
+          return render_template("cartpage.html.jinja") 
 
-            if checker is not None and userPassword == checker["password"]:
-                 
-                 user = load_user(checker["id"])
+@app.route("/loaditem/<int:>")
+def loaditem():
+            
+    cursor = get_db.cursor()
 
-                 flask_login.login_user(user)
+    cursor.execute(f"GET`1`,`2`,`3`,`4`")
 
-                 return redirect("/feed")
-
-        return render_template("signin.html.jinja")
-
+    cursor.close()
+    get_db.commit()
+    return render_template("itempage.html.jinja")
