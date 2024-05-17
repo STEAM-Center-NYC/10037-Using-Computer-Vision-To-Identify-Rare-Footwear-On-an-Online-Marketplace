@@ -15,34 +15,10 @@ from dynaconf import Dynaconf
 #import os
 #import matplotlib.pyplot as pplt
 #import matplotlib.image as ppltimg
-
-######database
+######
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
-
-def connect_db():
-    return pymysql.connect (
-        database = "kick_insight",
-        user = "cscarlett",
-        password = "228941274",
-        host = "10.100.33.60",
-        cursorclass = pymysql.cursors.DictCursor,
-        autocommit=True
-)
-
-def get_db():
-    #Opens a new database connection per request.        
-    if not hasattr(g, 'db'):
-        g.db = connect_db()
-    return g.db   
-
-@app.teardown_appcontext
-def close_db(error):
-    #Closes the database connection at the end of request.    
-    if hasattr(g, 'db'):
-        g.db.close() 
-
 
 ######userlogin
 
@@ -89,6 +65,32 @@ def load_user(user_id):
         return None
     
     return User(check["id"], check ["pfp"], check["email"], check["username"])
+     
+######database
+
+def connect_db():
+    return pymysql.connect (
+        database = "kick_insight",
+        user = "cscarlett",
+        password = "228941274",
+        host = "10.100.33.60",
+        cursorclass = pymysql.cursors.DictCursor,
+        autocommit=True
+)
+
+
+
+def get_db():
+    #Opens a new database connection per request.        
+    if not hasattr(g, 'db'):
+        g.db = connect_db()
+    return g.db   
+
+@app.teardown_appcontext
+def close_db(error):
+    #Closes the database connection at the end of request.    
+    if hasattr(g, 'db'):
+        g.db.close() 
 
 ######routs
 
@@ -109,10 +111,10 @@ def signup():
 
 
 
-#@app.route("/signin", methods=["POST", "GET"])
-#def signin():
+@app.route("/signin", methods=["POST", "GET"])
+def signin():
 
-#          return render_template("signin.html.jinja") 
+          return render_template("signin.html.jinja") 
 
 @app.route("/aipage", methods=["POST", "GET"])
 def aipage():
@@ -127,10 +129,11 @@ def cartpage():
 @app.route("/loaditem/<int:>")
 def loaditem():
             
-    cursor = get_db.cursor()
+    
+    cursor=db.cursor()
 
     cursor.execute(f"GET`1`,`2`,`3`,`4`")
 
     cursor.close()
-    get_db.commit()
+    db.commit()
     return render_template("itempage.html.jinja")
