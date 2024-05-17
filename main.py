@@ -20,29 +20,7 @@ from dynaconf import Dynaconf
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
-def connect_db():
-    return pymysql.connect (
-        database = "cscarlett_healthsync",
-        user = "cscarlett",
-        password = "228941274",
-        host = "10.100.33.60",
-        cursorclass = pymysql.cursors.DictCursor,
-        autocommit=True
-)
-
-def get_db():
-    '''Opens a new database connection per request.'''        
-    if not hasattr(g, 'db'):
-        g.db = connect_db()
-    return g.db   
-
-@app.teardown_appcontext
-def close_db(error):
-    '''Closes the database connection at the end of request.'''    
-    if hasattr(g, 'db'):
-        g.db.close()  
-
-######
+######userlogin
 
 app.secret_key = "br3@D_y_-19!"
 login_manager = flask_login.LoginManager()
@@ -88,7 +66,7 @@ def load_user(user_id):
     
     return User(check["id"], check ["pfp"], check["email"], check["username"])
      
-######
+######database
 
 def connect_db():
     return pymysql.connect (
@@ -114,13 +92,17 @@ def close_db(error):
     if hasattr(g, 'db'):
         g.db.close() 
 
-######
+######routs
 
 @app.route("/", methods=["POST", "GET"])
 def index():
 
   
     return render_template ("homepage.html.jinja")
+
+@app.route("/itempage", methods=["POST", "GET"])
+def itempage():
+    return render_template("itempage.html.jinja")
 
 
 @app.route("/signup", methods=["POST", "GET"])
@@ -143,3 +125,15 @@ def aipage():
 def cartpage():
 
           return render_template("cartpage.html.jinja") 
+
+@app.route("/loaditem/<int:>")
+def loaditem():
+            
+    
+    cursor=db.cursor()
+
+    cursor.execute(f"GET`1`,`2`,`3`,`4`")
+
+    cursor.close()
+    db.commit()
+    return render_template("itempage.html.jinja")
