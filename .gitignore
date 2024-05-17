@@ -2,4 +2,3 @@ settings.toml
 __pycache__/*
 archive/*
 resized/*
-static/*
