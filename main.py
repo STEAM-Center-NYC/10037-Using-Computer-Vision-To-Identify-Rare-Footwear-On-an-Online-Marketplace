@@ -1,5 +1,3 @@
-
-
 from flask import Flask, render_template, request, redirect, jsonify, g
 import flask_login
 import pymysql
@@ -17,191 +15,142 @@ from dynaconf import Dynaconf
 #import os
 #import matplotlib.pyplot as pplt
 #import matplotlib.image as ppltimg
-######
 
+######database
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
+def connect_db():
+    return pymysql.connect (
+        database = "kick_insight",
+        user = "cscarlett",
+        password = "228941274",
+        host = "10.100.33.60",
+        cursorclass = pymysql.cursors.DictCursor,
+        autocommit=True
+)
+
+def get_db():
+    #Opens a new database connection per request.        
+    if not hasattr(g, 'db'):
+        g.db = connect_db()
+    return g.db   
+
+@app.teardown_appcontext
+def close_db(error):
+    #Closes the database connection at the end of request.    
+    if hasattr(g, 'db'):
+        g.db.close() 
+
 
 ######userlogin
-
 
 app.secret_key = "br3@D_y_-19!"
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
-
 class User:
-   
-    is_authenticated = True
-    is_anonymous = False
-    is_active = True
+     
+     is_authenticated = True
+     is_anonymous = False
+     is_active = True
 
+     def __init__(self, id, pfp, email, username):
+          
+          self.id = id
+          self.pfp = pfp
+          self.email = email
+          self.username = username
 
-    def __init__(self, id, pfp, email, username):
-        
-         self.id = id
-         self.pfp = pfp
-         self.email = email
-         self.username = username
-
-
-    def get_id(self):
-        
-         return str(self.id)
-
-
+     def get_id(self):
+          
+          return str(self.id)
 
 
 ######
 
-
-@login_manager.user_loader
-
+@login_manager.user_loader 
 
 def load_user(user_id):
-   
-   cursor = get_db().cursor()
+     
+    cursor = get_db().cursor()
 
+    cursor.execute(f"(SELECT * FROM `users` WHERE `id` = {user_id})")
 
-   cursor.execute(f"(SELECT * FROM `users` WHERE `id` = {user_id})")
+    check = cursor.fetchone()
 
+    cursor.close()
 
-   check = cursor.fetchone()
+    get_db().commit()
 
-
-   cursor.close()
-
-
-   get_db().commit()
-
-
-   if check is None:
-       
-       return None
-  
-   return User(check["id"], check ["pfp"], check["email"], check["username"])
-   
-######database
-
-
-def connect_db():
-   return pymysql.connect (
-       database = "kick_insight",
-       user = "cscarlett",
-       password = "228941274",
-       host = "10.100.33.60",
-       cursorclass = pymysql.cursors.DictCursor,
-       autocommit=True
-)
-
-
-
-
-
-
-def get_db():
-   #Opens a new database connection per request.       
-   if not hasattr(g, 'db'):
-       g.db = connect_db()
-   return g.db  
-
-
-@app.teardown_appcontext
-def close_db(error):
-   #Closes the database connection at the end of request.   
-   if hasattr(g, 'db'):
-       g.db.close()
-
+    if check is None:
+         
+        return None
+    
+    return User(check["id"], check ["pfp"], check["email"], check["username"])
 
 ######routs
 
-
 @app.route("/", methods=["POST", "GET"])
 def index():
-
 
     return render_template ("homepage.html.jinja")
 
 
 @app.route("/itempage", methods=["POST", "GET"])
 def itempage():
-   return render_template("itempage.html.jinja")
 
-
+    return render_template("itempage.html.jinja")
 
 
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
 
+    return render_template("signup.html.jinja")
 
-   if request.method == "POST":
+#@app.route("/signin", methods=["POST", "GET"])
+#def signin():
 
-
-       newUserEmail = request.form["Email"]
-
-
-       newUserUsername = request.form["Username"]
-
-
-       newUserPassword = request.form["Password"]
-
-
-      
-       cursor = get_db().cursor()
-
-
-       cursor.execute(f"INSERT INTO `Users` (`Email`, `Username`, `Password`) VALUES ('{newUserEmail}', '{newUserUsername}', '{newUserPassword}')")
-
-
-       cursor.close()
-
-
-       get_db().commit()
-
-
-       return redirect("signin.html.jinja")
-
-
-   return render_template ("signup.html.jinja")
-
-
-
-
-
-
-@app.route("/signin", methods=["POST", "GET"])
-def signin():
-
-
-         return render_template("signin.html.jinja")
-
+#          return render_template("signin.html.jinja") 
 
 @app.route("/aipage", methods=["POST", "GET"])
 def aipage():
 
-
-         return render_template("aipage.html.jinja")
+          return render_template("aipage.html.jinja")
+ 
 @app.route("/cartpage", methods=["POST", "GET"])
 def cartpage():
 
+          return render_template("cartpage.html.jinja") 
 
-         return render_template("cartpage.html.jinja")
+"""
+@app.route("/loaditem/<int:>")
+def loaditem():
+            
+    cursor = get_db().cursor()
 
+    cursor.execute(f"GET`1`,`2`,`3`,`4`")
 
-#@app.route("/loaditem/<int:>")
-#def loaditem():
-          
-  
-#    cursor=db.cursor()
+    cursor.close()
 
+    get_db.commit()
 
-#    cursor.execute(f"GET`1`,`2`,`3`,`4`")
+    return render_template("itempage.html.jinja")
+"""
+    
 
+@app.route("/homepaging", methods=["POST", "GET"])
+def homepaging():
 
-#    cursor.close()
-#    db.commit()
-#    return render_template("itempage.html.jinja")
+    cursor = get_db().cursor()
 
+    #cursor.execute(f"SELECT * FROM `Products` WHERE `id` = '{userRequestedItem}'")
 
+    #checker = cursor.fetchone()
+
+    #cursor.close()
+
+    #get_db.commit()
+
+    return render_template("homepaging.html.jinja")
