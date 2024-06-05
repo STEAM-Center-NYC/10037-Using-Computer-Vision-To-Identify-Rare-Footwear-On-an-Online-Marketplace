@@ -98,9 +98,6 @@ def connect_db():
 
 
 
-
-
-
 def get_db():
    #Opens a new database connection per request.       
    if not hasattr(g, 'db'):
@@ -190,18 +187,18 @@ def cartpage():
          return render_template("cartpage.html.jinja")
 
 
-#@app.route("/loaditem/<int:>")
-#def loaditem():
+@app.route("/loaditem/<int:name>")
+def loaditem(name):
           
   
-#    cursor=db.cursor()
+    cursor = get_db().cursor()
 
 
-#    cursor.execute(f"GET`1`,`2`,`3`,`4`")
+    cursor.execute(f"GET`id`,`name`,`img`,`price`")
 
 
-#    cursor.close()
-#    db.commit()
-#    return render_template("itempage.html.jinja")
+    cursor.close()
+    get_db.commit()
+    return render_template("itempage.html.jinja")
 
 
