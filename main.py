@@ -124,7 +124,18 @@ def index():
 
 @app.route("/itempage", methods=["POST", "GET"])
 def itempage():
-   return render_template("itempage.html.jinja")
+          
+    cursor = get_db().cursor()
+
+
+    cursor.execute(f"GET`*` FROM `products`")
+
+
+    cursor.close()
+    get_db.commit()
+    return render_template("itempage.html.jinja")
+   
+   return render_template("itempage.html.jinja" Products = Products)
 
 
 
