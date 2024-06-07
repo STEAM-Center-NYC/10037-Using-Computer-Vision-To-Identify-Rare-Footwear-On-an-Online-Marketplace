@@ -133,7 +133,7 @@ def itempage():
 
     cursor.close()
     get_db.commit()
-    return render_template("itempage.html.jinja")
+    
    
    return render_template("itempage.html.jinja" Products = Products)
 
