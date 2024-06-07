@@ -1,5 +1,4 @@
 
-
 from flask import Flask, render_template, request, redirect, jsonify, g
 import flask_login
 import pymysql
@@ -26,6 +25,59 @@ auth = HTTPBasicAuth()
 
 ######userlogin
 
+
+
+app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+def connect_db():
+    return pymysql.connect (
+        database = "kick_insight",
+        user = "cscarlett",
+        password = "228941274",
+        host = "10.100.33.60",
+        cursorclass = pymysql.cursors.DictCursor,
+        autocommit=True
+)
+
+def get_db():
+    #Opens a new database connection per request.        
+    if not hasattr(g, 'db'):
+        g.db = connect_db()
+    return g.db   
+
+@app.teardown_appcontext
+def close_db(error):
+    #Closes the database connection at the end of request.    
+    if hasattr(g, 'db'):
+        g.db.close() 
+
+
+######userlogin
+
+app.secret_key = "br3@D_y_-19!"
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+class User:
+     
+     is_authenticated = True
+     is_anonymous = False
+     is_active = True
+
+     def __init__(self, id, pfp, email, username):
+          
+          self.id = id
+          self.pfp = pfp
+          self.email = email
+          self.username = username
+
+     def get_id(self):
+          
+          return str(self.id)
+
+
+######
 
 app.secret_key = "br3@D_y_-19!"
 login_manager = flask_login.LoginManager()
@@ -83,35 +135,6 @@ def load_user(user_id):
   
    return User(check["id"], check ["pfp"], check["email"], check["username"])
    
-######database
-
-
-def connect_db():
-   return pymysql.connect (
-       database = "kick_insight",
-       user = "cscarlett",
-       password = "228941274",
-       host = "10.100.33.60",
-       cursorclass = pymysql.cursors.DictCursor,
-       autocommit=True
-)
-
-
-
-def get_db():
-   #Opens a new database connection per request.       
-   if not hasattr(g, 'db'):
-       g.db = connect_db()
-   return g.db  
-
-
-@app.teardown_appcontext
-def close_db(error):
-   #Closes the database connection at the end of request.   
-   if hasattr(g, 'db'):
-       g.db.close()
-
-
 ######routs
 
 
@@ -211,5 +234,3 @@ def loaditem(name):
     cursor.close()
     get_db.commit()
     return render_template("itempage.html.jinja")
-
-
