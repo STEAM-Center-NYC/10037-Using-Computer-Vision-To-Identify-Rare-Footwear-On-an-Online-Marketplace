@@ -94,7 +94,7 @@
          <div class="carousel-item active">
            <img src="" class=" d-block w-100">
              <div class="carousel-caption d-none d-md-block">
-             <h4>1st</h4>
+             <h4></h4>
            <p>1st picture</p>
            </div>
          </div>
@@ -133,17 +133,26 @@
    </div>
 <!--End of carousel-->
 <!--text box-->
+
+    {%for product in [products]%}
+    
        <div class="col">
        <div class="card h-10">
            <div class="card-body">
-           <h5 class="card-title">Spirfire Wheels</h5>           
-           <H2>$39.99</H2>
-           <h3>TEXT</h3>
-           <h4 style="float:left;">shoe is shoe</h4>
-           <h4 style="float:right">left is right and up is down</h4>
+           
+           <h5 class="card-title">{{Products['name']}}</h5>           
+
+           <H2>{{Products['price']}}</H2> 
+
+           <h4 style="float:left;">avalibal in different sizes<h4>
+           <h4 style="float:right">text</h4>
            </div>
        </div>
        </div>
+    {%endfor%}
+
+
+
 <!--end of text box-->
 
 

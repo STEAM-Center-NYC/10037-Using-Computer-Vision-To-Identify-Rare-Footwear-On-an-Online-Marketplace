@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, jsonify, g
 import flask_login
 import pymysql
@@ -15,8 +16,16 @@ from dynaconf import Dynaconf
 #import os
 #import matplotlib.pyplot as pplt
 #import matplotlib.image as ppltimg
+######
 
-######database
+
+app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+
+######userlogin
+
+
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -70,87 +79,158 @@ class User:
 
 ######
 
-@login_manager.user_loader 
+app.secret_key = "br3@D_y_-19!"
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+
+class User:
+   
+    is_authenticated = True
+    is_anonymous = False
+    is_active = True
+
+
+    def __init__(self, id, pfp, email, username):
+        
+         self.id = id
+         self.pfp = pfp
+         self.email = email
+         self.username = username
+
+
+    def get_id(self):
+        
+         return str(self.id)
+
+
+
+
+######
+
+
+@login_manager.user_loader
+
 
 def load_user(user_id):
-     
-    cursor = get_db().cursor()
+   
+   cursor = get_db().cursor()
 
-    cursor.execute(f"(SELECT * FROM `users` WHERE `id` = {user_id})")
 
-    check = cursor.fetchone()
+   cursor.execute(f"(SELECT * FROM `users` WHERE `id` = {user_id})")
 
-    cursor.close()
 
-    get_db().commit()
+   check = cursor.fetchone()
 
-    if check is None:
-         
-        return None
-    
-    return User(check["id"], check ["pfp"], check["email"], check["username"])
 
+   cursor.close()
+
+
+   get_db().commit()
+
+
+   if check is None:
+       
+       return None
+  
+   return User(check["id"], check ["pfp"], check["email"], check["username"])
+   
 ######routs
+
 
 @app.route("/", methods=["POST", "GET"])
 def index():
+
 
     return render_template ("homepage.html.jinja")
 
 
 @app.route("/itempage", methods=["POST", "GET"])
 def itempage():
+          
+    cursor = get_db().cursor()
 
-    return render_template("itempage.html.jinja")
+
+    cursor.execute(f"GET`*` FROM `products`")
+
+
+    cursor.close()
+    get_db.commit()
+    
+   
+   return render_template("itempage.html.jinja" Products = Products)
+
+
 
 
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
 
-    return render_template("signup.html.jinja")
 
-#@app.route("/signin", methods=["POST", "GET"])
-#def signin():
+   if request.method == "POST":
 
-#          return render_template("signin.html.jinja") 
+
+       newUserEmail = request.form["Email"]
+
+
+       newUserUsername = request.form["Username"]
+
+
+       newUserPassword = request.form["Password"]
+
+
+      
+       cursor = get_db().cursor()
+
+
+       cursor.execute(f"INSERT INTO `Users` (`Email`, `Username`, `Password`) VALUES ('{newUserEmail}', '{newUserUsername}', '{newUserPassword}')")
+
+
+       cursor.close()
+
+
+       get_db().commit()
+
+
+       return redirect("signin.html.jinja")
+
+
+   return render_template ("signup.html.jinja")
+
+
+
+
+
+
+@app.route("/signin", methods=["POST", "GET"])
+def signin():
+
+
+         return render_template("signin.html.jinja")
+
 
 @app.route("/aipage", methods=["POST", "GET"])
 def aipage():
 
-          return render_template("aipage.html.jinja")
- 
+
+         return render_template("aipage.html.jinja")
 @app.route("/cartpage", methods=["POST", "GET"])
 def cartpage():
 
-          return render_template("cartpage.html.jinja") 
 
-"""
-@app.route("/loaditem/<int:>")
-def loaditem():
-            
+         return render_template("cartpage.html.jinja")
+
+
+@app.route("/loaditem/<int:name>")
+def loaditem(name):
+          
+  
     cursor = get_db().cursor()
 
-    cursor.execute(f"GET`1`,`2`,`3`,`4`")
+
+    cursor.execute(f"GET`id`,`name`,`img`,`price`")
+
 
     cursor.close()
-
     get_db.commit()
-
     return render_template("itempage.html.jinja")
-"""
-    
-
-@app.route("/homepaging", methods=["POST", "GET"])
-def homepaging():
-
-    cursor = get_db().cursor()
-
-    #cursor.execute(f"SELECT * FROM `Products` WHERE `id` = '{userRequestedItem}'")
-
-    #checker = cursor.fetchone()
-
-    #cursor.close()
-
-    #get_db.commit()
-
-    return render_template("homepaging.html.jinja")
